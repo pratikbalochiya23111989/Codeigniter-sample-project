@@ -1,0 +1,66 @@
+1. Select Query
+Call : 
+$columnsToSelect = 'iLanguageId,tTitle';
+$comparisonColumnsAndValues = array('eStatus !=' => array('Deleted','where'),'iLanguageId'=>array(1,'or_where'));
+$sortingColumnsAndValues = array('iLanguageId'=>'DESC');
+$data = $this->querycreator->selectQuery('languages',$columnsToSelect,$comparisonColumnsAndValues,'Multiple',$sortingColumnsAndValues);
+
+2. Insert Single
+Call : 
+$insertRec = array('tTitle' => 'Japanese','vCode'=>'jp');
+$id = $this->querycreator->insertSingle('languages',$insertRec);
+
+3. Insert Multiple
+Call : 
+$insertRec = array(array('tTitle' => 'Arabic','vCode'=>'ar'),array('tTitle' => 'Chinese','vCode'=>'ch'));
+$this->querycreator->insertMultiple('languages',$insertRec);
+
+4. Update Query
+Call : 
+$targetColumnsAndValues = array('tTitle'=>'Chinese');
+$comparisonColumnsAndValues = array('iLanguageId' => array(6,'where'));
+$totalRows = $this->querycreator->updateQuery('languages',$comparisonColumnsAndValues,$targetColumnsAndValues);
+
+5. Delete Query
+Call : 
+$comparisonColumnsAndValues = array('iLanguageId' => array(7,'where'));
+$totalRows = $this->querycreator->deleteQuery('languages',$comparisonColumnsAndValues);
+
+6. Join Inner Query
+Call : 
+$columnsToSelect = "cn.iCountryId,cn.tTitle,st.iStateId,st.tTitle as StateTitle,ct.iCityId,ct.tTitle as CityTitle";
+$comparisonColumnsAndValues = array('cn.iCountryId' => array(1,'where'));
+$tableComparisonColumns = array('countries cn'=>'','states st'=> 'cn.iCountryId=st.iCountryId','cities ct'=>'st.iStateId=ct.iStateId');
+$totalRecords = $this->querycreator->joinInnerQuery($tableComparisonColumns,$columnsToSelect,$comparisonColumnsAndValues,'Multiple',NULL);
+
+7. No of records
+Call : 
+$comparisonColumnsAndValues = array('eStatus !=' => array('Deleted','where'),'iLanguageId'=>array(1,'or_where'));
+$noOfRows = $this->querycreator->noOfRecords('languages',$comparisonColumnsAndValues);
+
+8. Join Inner No of records
+Call : 
+$tableComparisonColumns = array('countries cn'=>'','states st'=> 'cn.iCountryId=st.iCountryId','cities ct'=>'st.iStateId=ct.iStateId');
+$comparisonColumnsAndValues = array('cn.iCountryId' => array(1,'where'));
+$totalRecords = $this->querycreator->joinInnerNoOfRecords($tableComparisonColumns,$comparisonColumnsAndValues);
+
+9. Custom Query (Only for fetching data)
+Call : (Single / Multiple)
+$sql = "select * from countries";
+$totalRecords = $this->querycreator->customQuery($sql,'Multiple');
+
+10. Add Column (Single/Multiple)
+Call : 
+$fields = array('tValue_en' => array('type' => 'VARCHAR','constraint' => '255','after'=>'tCode','null' => false),'tValue_du' => array('type' => 'VARCHAR','constraint' => '255','after'=>'tCode','null' => false));
+$this->querycreator->deleteColumnQuery('language_labels',$fields);
+Returns:	
+TRUE on success, FALSE on failure
+Return type:	
+bool
+
+11. Drop Column (Single)
+$this->querycreator->deleteColumnQuery('language_labels','tValue_eq');
+Returns:	
+TRUE on success, FALSE on failure
+Return type:	
+bool
